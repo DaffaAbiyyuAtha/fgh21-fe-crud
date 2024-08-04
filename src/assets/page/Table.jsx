@@ -1,17 +1,17 @@
 import React from "react";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 function Table() {
   const navigate = useNavigate();
   const [data, setData] = React.useState([]);
+  async function datas() {
+    const dataHome = await fetch("http://localhost:8080/users", {});
+    const listData = await dataHome.json();
+    setData(listData.result);
+  }
   useEffect(() => {
-    async function data() {
-      const dataHome = await fetch("http://localhost:8080/users", {});
-      const listData = await dataHome.json();
-      setData(listData.result);
-    }
-    data();
+    datas();
   }, []);
   function navToInput() {
     navigate("/inputdata");
@@ -22,18 +22,20 @@ function Table() {
     })
       .then(() => {
         console.log("removed");
+        datas();
       })
       .catch((err) => {
         console.log(err);
       });
   }
-  removeData();
+  //   removeData();
   //   async function removeData() {
-  //     const dataHome = await fetch("http://localhost:8080/users" + "/" + id, {
+  //     const datas = await fetch("http://localhost:8080/users" + "/" + id, {
   //       method: "DELETE",
   //     });
-  //     const listData = await dataHome.json();
+  //     const listData = await datas.json();
   //     setData(listData.result);
+  //     console.log(listData);
   //   }
   //   removeData();
   return (
@@ -62,19 +64,20 @@ function Table() {
                     <td>{item.name}</td>
                     <td>{item.email}</td>
                     <td className="flex gap-1">
-                      <button
-                        type="button"
-                        className="bg-black p-2 rounded-lg text-white"
-                      >
-                        Edit
-                      </button>
+                      <Link to={`/updatedata/${item.id}`}>
+                        <button
+                          type="button"
+                          className="bg-black p-2 rounded-lg text-white"
+                        >
+                          Edit
+                        </button>
+                      </Link>
                       <button
                         onClick={() => removeData(item.id)}
                         type="button"
                         className="bg-black p-2 rounded-lg
                         text-white"
                       >
-                        {" "}
                         Delete
                       </button>
                     </td>
